@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
+import dynamic from "next/dynamic";
+const ToogleTheme = dynamic(() => import("./ToogleTheme"), { ssr: false });
 
 interface DropdownItem {
   href: string;
@@ -317,6 +319,7 @@ export default function Navbar() {
                 </Link>
               );
             })}
+            <ToogleTheme />
           </div>
 
           {/* Mobile Button */}
