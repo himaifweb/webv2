@@ -1,30 +1,25 @@
-"use client";
-
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-const Hero = dynamic(() => import("./components/Hero"), {
-  ssr: false,
-});
+import NewsContainer from "./components/NewsContainer";
+import VisiMision from "./components/VisiMision";
+import Footer from "@/src/components/shared/Footer";
 
-const News = dynamic(() => import("./components/News"), {
-  ssr: false,
-});
+const Navbar = dynamic(() => import("../../components/shared/Navbar"));
+const Hero = dynamic(() => import("./components/Hero"));
+const AboutUs = dynamic(() => import("./components/AboutUs"));
 
-const Navbar = dynamic(() => import("../../components/shared/Navbar"), {
-  ssr: false,
-});
-
-const AboutUs = dynamic(() => import("./components/AboutUs"), {
-  ssr: false,
-});
-
-export default function Home() {
+export default async function Home() {
   return (
     <>
-      <Navbar />
-      <News />
-      <Hero />
-      <AboutUs />
+      <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
+        <Navbar />
+        <NewsContainer />
+        <Hero />
+        <AboutUs />
+        <VisiMision />
+        <Footer />
+      </Suspense>
     </>
   );
 }
