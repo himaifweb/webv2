@@ -1,15 +1,11 @@
 "use client";
 
-import React from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "cn";
 import { useNewsCarousel } from "@/src/app/(home)/hooks/useNewsCarousel";
-import { PaginationProps } from "@/src/app/(home)/types/news";
+import { NewsSectionProps, PaginationProps } from "@/src/app/(home)/types/news";
 
-export const Pagination: React.FC<PaginationProps> = ({
-  activePage,
-  onClick,
-}) => {
+export function Pagination({ activePage, onClick }: PaginationProps) {
   return (
     <span
       className={cn(
@@ -21,15 +17,13 @@ export const Pagination: React.FC<PaginationProps> = ({
       onClick={onClick}
     />
   );
-};
+}
 
-const News: React.FC = () => {
-  const { sectionRef, emblaRef, page, progress, data, loading, scrollTo } =
-    useNewsCarousel({ delay: 5000 });
-
-  if (loading || !data || data.length === 0) {
-    return null;
-  }
+export default function News({ data = [] }: NewsSectionProps) {
+  // Use the custom hook to manage the carousel state
+  const { sectionRef, emblaRef, page, progress, scrollTo } = useNewsCarousel({
+    delay: 5000,
+  });
 
   const currentItem = data[page];
 
@@ -177,6 +171,4 @@ const News: React.FC = () => {
       </div>
     </section>
   );
-};
-
-export default News;
+}

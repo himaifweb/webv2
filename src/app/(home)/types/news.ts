@@ -17,3 +17,11 @@ export interface PaginationProps {
   activePage: boolean;
   onClick: () => void;
 }
+
+export interface NewsSectionProps {
+  data: ActivityNewsItem[];
+}
+
+export interface UseNewsCarouselOptions {
+  delay?: number;
+}
