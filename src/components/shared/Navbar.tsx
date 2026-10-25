@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { cn } from "@/src/lib/utils";
 
 interface DropdownItem {
   href: string;
@@ -55,7 +56,7 @@ const scrollToSectionWhenReady = (
   return cleanup;
 };
 
-const Navbar = () => {
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("Home");
 
@@ -155,120 +156,205 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="fixed w-full top-0 z-50 transition-all duration-500 bg-white border-b border-slate-100">
-      <div className="mx-auto px-[5%] lg:px-[10%]">
-        <div className="flex items-center justify-between h-16">
-          <div className="shrink-0">
-            <Link
-              href="/"
-              onClick={(e) => handleNavClick(e, "/")}
-              className="flex items-center text-xl font-bold text-black cursor-pointer"
-            >
-              <Image
-                src="/image/Logo.png"
-                alt="HIMAIF Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8 mr-2 object-contain"
-              />
-              HIMAIF
-            </Link>
-          </div>
+    <nav
+      className={cn(
+        //position & layout
+        "fixed top-0 z-50 w-full",
+        //transition
+        "transition-all duration-500",
+        //color & border
+        "bg-background border-b border-foreground",
+      )}
+    >
+      <div
+        className={cn(
+          //layout
+          "mx-auto",
+          //spacing
+          "px-[5%] lg:px-[10%]",
+        )}
+      >
+        <div
+          className={cn(
+            //layout
+            "flex items-center justify-between h-16",
+          )}
+        >
+          <Link
+            href="/"
+            onClick={(e) => handleNavClick(e, "/")}
+            className={cn(
+              //flex
+              "flex items-center",
+              //typography
+              "text-xl font-bold text-foreground cursor-pointer",
+            )}
+          >
+            <Image
+              src="/image/Logo.png"
+              alt="HIMAIF Logo"
+              width={32}
+              height={32}
+              className={cn(
+                //sizing & spacing
+                "w-8 h-8 mr-3",
+              )}
+            />
+            HIMAIF
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-8 flex items-center space-x-6">
-              {navItems.map((item) => {
-                const isActive = checkIsActive(item);
+          <div
+            className={cn(
+              //visibility & responsive layout
+              "hidden md:h-full md:flex md:items-center",
+              //spacing
+              "md:gap-x-6",
+            )}
+          >
+            {navItems.map((item) => {
+              const isActive = checkIsActive(item);
 
-                if (item.dropdown) {
-                  return (
+              if (item.dropdown) {
+                return (
+                  <div
+                    key={item.label}
+                    className={cn(
+                      //spacing & sizing
+                      "px-1 py-2 h-full",
+                      //typography
+                      "text-sm font-semibold",
+                      isActive
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-primary",
+                      //interaction
+                      "cursor-pointer",
+                      //layout
+                      "flex items-center gap-1",
+                      //transition
+                      "transition-all duration-300",
+                      //dropdown positioning
+                      "group relative",
+                    )}
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className={cn(
+                        //sizing
+                        "w-4 h-4",
+                        //transition
+                        "transition-all group-hover:rotate-180",
+                      )}
+                    />
                     <div
-                      key={item.label}
-                      className="group relative px-1 py-2 text-sm font-semibold cursor-pointer"
+                      className={cn(
+                        //position & sizing
+                        "absolute left-0 top-full mt-2 w-48",
+                        //color & border
+                        "bg-background border border-foreground rounded-xl shadow-lg",
+                        //visibility & transition
+                        "opacity-0 invisible group-hover:opacity-100 group-hover:visible",
+                        "transition-all duration-300 transform origin-top-left translate-y-2 group-hover:translate-y-0",
+                        //overflow
+                        "overflow-hidden",
+                      )}
                     >
-                      <span
-                        className={`flex items-center gap-1 transition-colors duration-300 ${
-                          isActive
-                            ? "text-black font-semibold"
-                            : "text-gray-700 group-hover:text-black"
-                        }`}
+                      <div
+                        className={cn(
+                          //spacing
+                          "py-2",
+                        )}
                       >
-                        {item.label}
-                        <svg
-                          className="w-4 h-4 transition-transform group-hover:rotate-180"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </span>
-                      <div className="absolute left-0 top-full mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-left translate-y-2 group-hover:translate-y-0 overflow-hidden">
-                        <div className="py-2">
-                          {item.dropdown.map((dropItem) => (
-                            <Link
-                              key={dropItem.label}
-                              href={dropItem.href}
-                              onClick={(e) => handleNavClick(e, dropItem.href)}
-                              className={`block px-4 py-2.5 text-sm transition-colors ${
-                                pathname === dropItem.href
-                                  ? "text-blue-600 bg-blue-50/50"
-                                  : "text-gray-700 hover:bg-slate-50 hover:text-blue-600"
-                              }`}
-                            >
-                              {dropItem.label}
-                            </Link>
-                          ))}
-                        </div>
+                        {item.dropdown.map((dropItem) => (
+                          <Link
+                            key={dropItem.label}
+                            href={dropItem.href}
+                            onClick={(e) => handleNavClick(e, dropItem.href)}
+                            className={cn(
+                              //layout & spacing
+                              "block px-4 py-2.5",
+                              //typography
+                              "text-sm",
+                              //transition
+                              "transition-all duration-300",
+                              //active state
+                              pathname === dropItem.href
+                                ? "text-foreground font-semibold"
+                                : "text-muted-foreground hover:text-primary",
+                            )}
+                          >
+                            {dropItem.label}
+                          </Link>
+                        ))}
                       </div>
                     </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={item.label}
-                    href={item.href || "/"}
-                    onClick={(e) => handleNavClick(e, item.href || "/")}
-                    className="group relative px-1 py-2 text-sm font-semibold"
-                  >
-                    <span
-                      className={`relative z-10 transition-colors duration-300 ${
-                        isActive
-                          ? "text-black font-semibold"
-                          : "text-gray-700 group-hover:text-black"
-                      }`}
-                    >
-                      {item.label}
-                    </span>
-                  </Link>
+                  </div>
                 );
-              })}
-            </div>
+              }
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href || "/"}
+                  onClick={(e) => handleNavClick(e, item.href || "/")}
+                  className={cn(
+                    //dropdown positioning
+                    "group relative",
+                    //spacing & sizing
+                    "h-full px-1 py-2",
+                    //layout
+                    "flex items-center",
+                    //transition
+                    "transition-all duration-300",
+                    //typography
+                    "text-sm font-semibold",
+                    isActive
+                      ? "text-foreground font-semibold"
+                      : "text-muted-foreground hover:text-primary",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile Button */}
-          <div className="md:hidden">
+          <div
+            className={cn(
+              //responsive visibility
+              "md:hidden",
+            )}
+          >
             <button
               type="button"
               aria-label={isOpen ? "Tutup menu navigasi" : "Buka menu navigasi"}
               aria-expanded={isOpen}
               aria-controls="mobile-navigation"
               onClick={() => setIsOpen(!isOpen)}
-              className={`p-2 transition-transform duration-300 ${
-                isOpen ? "rotate-90 scale-125" : ""
-              }`}
+              className={cn(
+                //spacing
+                "p-2",
+                //transition
+                "transition-all duration-300",
+                //open state
+                isOpen ? "rotate-90 scale-125" : "",
+              )}
             >
               {isOpen ? (
-                <X className="w-6 h-6" />
+                <X
+                  className={cn(
+                    //sizing
+                    "w-6 h-6",
+                  )}
+                />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu
+                  className={cn(
+                    //sizing
+                    "w-6 h-6",
+                  )}
+                />
               )}
             </button>
           </div>
@@ -278,13 +364,21 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       <div
         id="mobile-navigation"
-        className={`md:hidden transition-all duration-300 ease-in-out ${
+        className={cn(
+          //visibility & transition
+          "md:hidden transition-all duration-300 ease-in-out",
+          //open state
           isOpen
-            ? "max-h-screen opacity-100 bg-white"
-            : "max-h-0 opacity-0 overflow-hidden"
-        }`}
+            ? "max-h-screen opacity-100 bg-background"
+            : "max-h-0 opacity-0 overflow-hidden",
+        )}
       >
-        <div className="px-6 py-6 space-y-4">
+        <div
+          className={cn(
+            //spacing
+            "px-6 py-6 space-y-4",
+          )}
+        >
           {navItems.map((item, index) => {
             const isActive = checkIsActive(item);
 
@@ -297,16 +391,37 @@ const Navbar = () => {
                     transform: isOpen ? "translateX(0)" : "translateX(50px)",
                     opacity: isOpen ? 1 : 0,
                   }}
-                  className="transition-all duration-300 ease-out space-y-2"
+                  className={cn(
+                    //transition
+                    "transition-all duration-300 ease-out group",
+                    //spacing
+                    "space-y-2",
+                    //cursor
+                    "cursor-default",
+                  )}
                 >
                   <div
-                    className={`py-2 text-lg font-semibold ${
-                      isActive ? "text-black" : "text-gray-700"
-                    }`}
+                    className={cn(
+                      //spacing
+                      "py-2",
+                      //typography
+                      "text-lg font-semibold",
+                      //active state
+                      isActive
+                        ? "text-foreground"
+                        : "text-muted-foreground group-hover:text-primary",
+                    )}
                   >
                     {item.label}
                   </div>
-                  <div className="pl-4 space-y-2 border-l-2 border-gray-100 ml-2">
+                  <div
+                    className={cn(
+                      //spacing
+                      "pl-4 space-y-2 ml-2",
+                      //border
+                      "border-l-2 border-foreground/30",
+                    )}
+                  >
                     {item.dropdown.map((dropItem) => {
                       const isDropActive = pathname === dropItem.href;
                       return (
@@ -314,11 +429,14 @@ const Navbar = () => {
                           key={dropItem.label}
                           href={dropItem.href}
                           onClick={(e) => handleNavClick(e, dropItem.href)}
-                          className={`block py-1.5 text-md ${
+                          className={cn(
+                            //layout & spacing
+                            "block py-1.5",
+                            //typography & active state
                             isDropActive
-                              ? "font-semibold text-blue-600"
-                              : "font-medium text-gray-500"
-                          }`}
+                              ? "text-md font-semibold text-foreground"
+                              : "text-md font-medium text-muted-foreground hover:text-primary",
+                          )}
                         >
                           {dropItem.label}
                         </Link>
@@ -337,14 +455,23 @@ const Navbar = () => {
                   transform: isOpen ? "translateX(0)" : "translateX(50px)",
                   opacity: isOpen ? 1 : 0,
                 }}
-                className="transition-all duration-300 ease-out"
+                className={cn(
+                  //transition
+                  "transition-all duration-300 ease-out",
+                )}
               >
                 <Link
                   href={item.href || "/"}
-                  onClick={(e) => handleNavClick(e, item.href || "/")}
-                  className={`block py-2 text-lg font-semibold ${
-                    isActive ? "text-black" : "text-gray-700"
-                  }`}
+                  className={cn(
+                    //layout & spacing
+                    "block py-2",
+                    //typography
+                    "text-lg font-semibold",
+                    //active state
+                    isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-primary",
+                  )}
                 >
                   {item.label}
                 </Link>
@@ -355,6 +482,4 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}
