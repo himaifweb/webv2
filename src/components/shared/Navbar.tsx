@@ -5,7 +5,7 @@ import { ChevronDown, Menu, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/src/lib/utils";
+import { cn } from "cn";
 import dynamic from "next/dynamic";
 const ToogleTheme = dynamic(() => import("./ToogleTheme"), { ssr: false });
 
