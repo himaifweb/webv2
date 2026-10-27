@@ -8,14 +8,14 @@ export default function ToogleTheme() {
   return (
     <div
       className={cn(
-        "h-8 w-8 border border-foreground rounded-md cursor-pointer",
+        "h-8 w-8 border border-foreground rounded-md cursor-pointer hover:border-background hover:bg-foreground trasition-all duration-300",
       )}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
       {theme === "dark" ? (
-        <Moon className={cn("p-1 h-full w-full")} />
+        <Moon className={cn("p-1 h-full w-full hover:stroke-background")} />
       ) : (
-        <Sun className={cn("p-1 h-full w-full")} />
+        <Sun className={cn("p-1 h-full w-full hover:stroke-background")} />
       )}
     </div>
   );

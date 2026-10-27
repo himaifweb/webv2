@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/src/lib/utils";
+import { cn } from "cn";
 import { ThemeProvider } from "next-themes";
+import SmoothScrollProvider from "../components/shared/smoothScroll";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -35,15 +36,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         "antialiased",
         geistSans.variable,
         geistMono.variable,
-        "font-sans",
-        inter.variable,
+        "font-geist-sans",
+        "overflow-x-hidden",
       )}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <SmoothScrollProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </SmoothScrollProvider>
       </body>
     </html>
   );
